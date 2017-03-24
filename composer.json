@@ -1,0 +1,10 @@
+{
+    "name": "ngyuki/docker-php-dev",
+    "authors": [
+        {
+            "name": "ngyuki",
+            "email": "ngyuki.jp@gmail.com"
+        }
+    ],
+    "require": {}
+}
