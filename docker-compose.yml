@@ -17,6 +17,7 @@ services:
 
   php:
     build: ./
+    image: ngyuki/php-dev
     ports:
       - 9876:9876
     volumes:
