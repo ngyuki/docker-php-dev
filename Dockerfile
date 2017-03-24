@@ -1,4 +1,4 @@
-FROM php:7.1-alpine
+FROM php:alpine
 
 RUN apk --no-cache add autoconf gcc g++ make &&\
     pecl install xdebug &&\
