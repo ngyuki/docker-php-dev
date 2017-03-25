@@ -32,6 +32,11 @@ services:
         -d display_startup_errors=on
         -d log_errors=on
         -d error_log=
+        -d zend.assertions=1
+        -d assert.exception=1
+        -d xdebug.cli_color=1
+        -d xdebug.remote_enable=1
+        -d xdebug.remote_connect_back=1
         -d date.timezone=Asia/Tokyo
     environment:
       <<: *environment
