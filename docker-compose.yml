@@ -3,6 +3,8 @@ version: '2'
 services:
   mysql:
     image: mysql
+    ports:
+      - 3306:3306
     command:
       - --character-set-server=utf8
     environment: &environment
