@@ -1,10 +1,8 @@
 {
-    "name": "ngyuki/docker-php-dev",
-    "authors": [
-        {
-            "name": "ngyuki",
-            "email": "ngyuki.jp@gmail.com"
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
         }
-    ],
-    "require": {}
+    }
 }
