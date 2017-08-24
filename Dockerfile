@@ -1,4 +1,5 @@
-FROM php:alpine
+ARG BASE=php:alpine
+FROM ${BASE}
 
 RUN apk --no-cache add autoconf gcc g++ make &&\
     pecl install xdebug &&\
