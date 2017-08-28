@@ -11,6 +11,8 @@ PHP のアプリ開発用の Docker イメージ。
         - デフォで無効なので `docker-php-ext-enable xdebug` で有効化
     - pdo_mysql
         - デフォで有効
+    - zip
+        - デフォで有効
     - opcache
         - デフォで有効
 - Command
@@ -33,6 +35,9 @@ docker push ngyuki/php-dev:7.0-alpine
 ## Example
 
 ```sh
+# phpinfo
+docker run --rm ngyuki/php-dev php -i
+
 # Run script
 docker run --rm -v "$PWD":/app ngyuki/php-dev php /app/src/script.php
 
