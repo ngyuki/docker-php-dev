@@ -1,4 +1,4 @@
-ARG BASE=php:alpine
+ARG BASE=php:7.1-alpine
 FROM ${BASE}
 
 RUN apk --no-cache add autoconf gcc g++ make &&\
@@ -25,9 +25,9 @@ ADD https://phar.phpunit.de/phpunit.phar /usr/local/bin/phpunit
 ADD https://getcomposer.org/composer.phar /usr/local/bin/composer
 ADD http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar /usr/local/bin/php-cs-fixer
 
-RUN chmod +x /usr/local/bin/phpunit && phpunit --version &&\
-    chmod +x /usr/local/bin/composer && composer --version &&\
-    chmod +x /usr/local/bin/php-cs-fixer && php-cs-fixer --version
+RUN chmod +x /usr/local/bin/phpunit &&\
+    chmod +x /usr/local/bin/composer &&\
+    chmod +x /usr/local/bin/php-cs-fixer
 
 RUN composer create-project etsy/phan /tmp/phan --prefer-dist --no-dev &&\
     cd /tmp/phan &&\
