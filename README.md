@@ -8,18 +8,18 @@ PHP のアプリ開発用の Docker イメージ。
 
 - PHP Extension
     - xdebug
-        - デフォで無効なので `docker-php-ext-enable xdebug` で有効化
     - pdo_mysql
-        - デフォで有効
+    - gd
     - zip
-        - デフォで有効
     - opcache
-        - デフォで有効
 - Command
     - git
     - mysql
     - phpunit
     - composer
+
+PHP 拡張の xdebug はデフォで無効なので `docker-php-ext-enable xdebug` で有効化する必要があります。
+その他の PHP 拡張はすべてデフォで有効です。
 
 ## Build and Push
 

@@ -14,6 +14,9 @@ RUN docker-php-source extract &&\
 
 RUN docker-php-ext-install pdo_mysql pcntl
 
+RUN apk --no-cache add libpng-dev &&\
+    docker-php-ext-install gd
+
 RUN apk --no-cache add zlib-dev &&\
     docker-php-ext-install zip
 
