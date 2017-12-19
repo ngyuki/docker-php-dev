@@ -12,6 +12,14 @@ RUN docker-php-source extract &&\
     docker-php-ext-install ast &&\
     docker-php-source delete
 
+RUN docker-php-source extract &&\
+    mkdir -p /usr/src/php/ext/apcu &&\
+    pecl download apcu &&\
+    cat apcu-*.tgz | tar xzf - --strip-components=1 -C /usr/src/php/ext/apcu &&\
+    rm -f cat apcu-*.tgz &&\
+    docker-php-ext-install apcu &&\
+    docker-php-source delete
+
 RUN docker-php-ext-install pdo_mysql pcntl
 
 RUN apk --no-cache add libpng-dev &&\
@@ -20,7 +28,7 @@ RUN apk --no-cache add libpng-dev &&\
 RUN apk --no-cache add zlib-dev &&\
     docker-php-ext-install zip
 
-RUN apk --no-cache add git mysql-client
+RUN apk --no-cache add openssh rsync git mysql-client
 
 RUN docker-php-ext-enable opcache
 
