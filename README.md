@@ -27,23 +27,18 @@ PHP 拡張の xdebug はデフォで無効なので `docker-php-ext-enable xdebu
 ## Build and Push
 
 ```sh
-docker build . --build-arg BASE=php:7.1-alpine -t ngyuki/php-dev:7.1-alpine -t ngyuki/php-dev:latest
-docker build . --build-arg BASE=php:7.0-alpine -t ngyuki/php-dev:7.0-alpine
-
-docker push ngyuki/php-dev:latest
-docker push ngyuki/php-dev:7.1-alpine
-docker push ngyuki/php-dev:7.0-alpine
+make
+make test
+make push
 ```
 
 ## Example
 
 ```sh
-docker run --rm ngyuki/php-dev:7.0-alpine php -v
-docker run --rm -v "$PWD":/app ngyuki/php-dev:7.0-alpine php -d zend_extension=xdebug.so /app/check.php
+docker run --rm ngyuki/php-dev php -v
+docker run --rm -v "$PWD":/app ngyuki/php-dev \
+  php -d zend_extension=xdebug.so -d opcache.enable_cli=1 /app/check.php
 
 # Run built-in web server
 docker run --rm -v "$PWD":/app -p 9876:9876 ngyuki/php-dev php -S 0.0.0.0:9876 -t /app/public/
 ```
-
-
-

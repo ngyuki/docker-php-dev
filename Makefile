@@ -1,13 +1,24 @@
+versions = 7.1 7.0
 
-all:
-	docker pull php:7.1-alpine
-	docker build . --build-arg BASE=php:7.1-alpine -t ngyuki/php-dev:7.1-alpine -t ngyuki/php-dev:latest
+docker = docker
 
-	docker pull php:7.0-alpine
-	docker build . --build-arg BASE=php:7.0-alpine -t ngyuki/php-dev:7.0-alpine
+push_tags = latest ${versions}
 
-	docker push ngyuki/php-dev:latest
-	docker push ngyuki/php-dev:7.1-alpine
-	docker push ngyuki/php-dev:7.0-alpine
+all: build
 
-	echo ok
+build: latest ${versions}
+
+latest: $(firstword ${versions})
+	${docker} tag ngyuki/php-dev:$< ngyuki/php-dev:$@
+
+${versions}:
+	${docker} pull php:$@-alpine
+	${docker} build . --build-arg BASE=php:$@-alpine -t ngyuki/php-dev:$@
+
+test: $(addprefix test-,${versions})
+$(addprefix test-,${versions}):
+	${docker} run --rm -v "$$PWD":/app ngyuki/php-dev:$(subst test-,,$@) -d zend_extension=xdebug.so -d opcache.enable_cli=1 /app/check.php
+
+push: $(addprefix push-,${push_tags})
+push-%: %
+	${docker} push ngyuki/php-dev:$<
