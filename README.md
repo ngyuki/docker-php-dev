@@ -17,8 +17,9 @@ PHP のアプリ開発用の Docker イメージ。
     - rsync
     - git
     - mysql
-    - phpunit
     - composer
+    - phpunit
+    - phan
 
 PHP 拡張の xdebug はデフォで無効なので `docker-php-ext-enable xdebug` で有効化する必要があります。
 その他の PHP 拡張はすべてデフォで有効です。
@@ -37,12 +38,12 @@ docker push ngyuki/php-dev:7.0-alpine
 ## Example
 
 ```sh
-# phpinfo
-docker run --rm ngyuki/php-dev php -i
-
-# Run script
-docker run --rm -v "$PWD":/app ngyuki/php-dev php /app/src/script.php
+docker run --rm ngyuki/php-dev:7.0-alpine php -v
+docker run --rm -v "$PWD":/app ngyuki/php-dev:7.0-alpine php -d zend_extension=xdebug.so /app/check.php
 
 # Run built-in web server
 docker run --rm -v "$PWD":/app -p 9876:9876 ngyuki/php-dev php -S 0.0.0.0:9876 -t /app/public/
 ```
+
+
+

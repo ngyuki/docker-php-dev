@@ -1,4 +1,4 @@
-ARG BASE=php:7.0.10-alpine
+ARG BASE=php:7.0-alpine
 FROM ${BASE}
 
 RUN apk add --no-cache --virtual build.deps autoconf gcc g++ make &&\
@@ -21,16 +21,11 @@ RUN apk add --no-cache openssh rsync git mysql-client
 ADD https://phar.phpunit.de/phpunit.phar /usr/local/bin/phpunit
 ADD https://getcomposer.org/composer.phar /usr/local/bin/composer
 ADD http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar /usr/local/bin/php-cs-fixer
+ADD https://github.com/phan/phan/releases/download/0.12.5/phan.phar /usr/local/bin/phan
 
 RUN chmod +x /usr/local/bin/phpunit &&\
     chmod +x /usr/local/bin/composer &&\
-    chmod +x /usr/local/bin/php-cs-fixer
+    chmod +x /usr/local/bin/php-cs-fixer &&\
+    chmod +x /usr/local/bin/phan
 
-RUN docker-php-ext-enable opcache
-
-RUN php -d extension=ast.so /usr/local/bin/composer create-project etsy/phan /tmp/phan --prefer-dist --no-dev &&\
-    cd /tmp/phan &&\
-    mkdir -p build &&\
-    php -d phar.readonly=0 package.php &&\
-    install -m755 build/phan.phar /usr/local/bin/phan &&\
-    rm -fr /tmp/phan
+RUN docker-php-ext-enable opcache ast apcu
