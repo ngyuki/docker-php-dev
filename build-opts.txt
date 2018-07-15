@@ -1,0 +1,3 @@
+7.0: --build-arg PHPUNIT=phpunit-6.phar
+7.1: --build-arg PHPUNIT=phpunit.phar
+7.2: --build-arg PHPUNIT=phpunit.phar

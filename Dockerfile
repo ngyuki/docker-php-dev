@@ -1,5 +1,7 @@
-ARG BASE=php:7.0-alpine
+ARG BASE
 FROM ${BASE}
+
+ARG PHPUNIT
 
 RUN apk add --no-cache --virtual build.deps autoconf gcc g++ make &&\
     cd /tmp && pecl download xdebug &&\
@@ -18,8 +20,8 @@ RUN apk add --no-cache libpng zlib &&\
 
 RUN apk add --no-cache openssh rsync git mysql-client
 
-ADD https://phar.phpunit.de/phpunit.phar /usr/local/bin/phpunit
 ADD https://getcomposer.org/composer.phar /usr/local/bin/composer
+ADD https://phar.phpunit.de/${PHPUNIT} /usr/local/bin/phpunit
 ADD http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar /usr/local/bin/php-cs-fixer
 ADD https://github.com/phan/phan/releases/download/0.12.5/phan.phar /usr/local/bin/phan
 
@@ -27,8 +29,8 @@ RUN curl -LSs https://box-project.github.io/box2/installer.php | php &&\
   mv box.phar /usr/local/bin/box &&\
   chmod +x /usr/local/bin/box
 
-RUN chmod +x /usr/local/bin/phpunit &&\
-    chmod +x /usr/local/bin/composer &&\
+RUN chmod +x /usr/local/bin/composer &&\
+    chmod +x /usr/local/bin/phpunit &&\
     chmod +x /usr/local/bin/php-cs-fixer &&\
     chmod +x /usr/local/bin/phan
 
