@@ -23,6 +23,10 @@ ADD https://getcomposer.org/composer.phar /usr/local/bin/composer
 ADD http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar /usr/local/bin/php-cs-fixer
 ADD https://github.com/phan/phan/releases/download/0.12.5/phan.phar /usr/local/bin/phan
 
+RUN curl -LSs https://box-project.github.io/box2/installer.php | php &&\
+  mv box.phar /usr/local/bin/box &&\
+  chmod +x /usr/local/bin/box
+
 RUN chmod +x /usr/local/bin/phpunit &&\
     chmod +x /usr/local/bin/composer &&\
     chmod +x /usr/local/bin/php-cs-fixer &&\
