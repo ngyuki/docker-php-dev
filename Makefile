@@ -1,4 +1,4 @@
-versions = 7.1 7.0
+versions = 7.2 7.1 7.0
 
 docker = docker
 
