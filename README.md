@@ -36,9 +36,5 @@ make push
 
 ```sh
 docker run --rm ngyuki/php-dev php -v
-docker run --rm -v "$PWD":/app ngyuki/php-dev \
-  php -d zend_extension=xdebug.so -d opcache.enable_cli=1 /app/check.php
-
-# Run built-in web server
-docker run --rm -v "$PWD":/app -p 9876:9876 ngyuki/php-dev php -S 0.0.0.0:9876 -t /app/public/
+docker run --rm -v "$PWD":/app ngyuki/php-dev php -d zend_extension=xdebug.so -d opcache.enable_cli=1 /app/check.php
 ```
