@@ -35,3 +35,5 @@ RUN chmod +x /usr/local/bin/composer &&\
     chmod +x /usr/local/bin/phan
 
 RUN docker-php-ext-enable opcache ast apcu
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
