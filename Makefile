@@ -1,22 +1,18 @@
-versions = $(shell cat build-opts.txt|cut -d: -f1)
-build_opts = $(shell fgrep $@: build-opts.txt|cut -d: -f2)
+DOCKER_REPO = ngyuki/php-dev
+DOCKERFILE_PATH = Dockerfile
+versions = 7.0 7.1 7.2 7.3
 tags = ${versions} latest
 
-all: build
+all: latest
 
 build: ${tags}
 
-latest: $(firstword ${versions})
-	docker tag ngyuki/php-dev:$< ngyuki/php-dev:$@
+latest: $(lastword ${versions})
+	IMAGE_NAME=${DOCKER_REPO}:$< DOCKER_TAG=$^ LATEST_VERSION=$@ \
+	DOCKER_REPO=${DOCKER_REPO} DOCKERFILE_PATH=${DOCKERFILE_PATH} \
+	./hooks/post_push
 
 ${versions}:
-	docker pull php:$@-alpine
-	docker build . --build-arg BASE=php:$@-alpine ${build_opts} -t ngyuki/php-dev:$@
-
-test: $(addprefix test-,${versions})
-$(addprefix test-,${versions}):
-	docker run --rm -v "$$PWD":/app ngyuki/php-dev:$(subst test-,,$@) -d zend_extension=xdebug.so -d opcache.enable_cli=1 /app/check.php
-
-push: $(addprefix push-,${tags})
-$(addprefix push-,${tags}):
-	docker push ngyuki/php-dev:$(subst push-,,$@)
+	IMAGE_NAME=${DOCKER_REPO}:$@ DOCKER_TAG=$@ \
+	DOCKER_REPO=${DOCKER_REPO} DOCKERFILE_PATH=${DOCKERFILE_PATH} \
+	./hooks/build

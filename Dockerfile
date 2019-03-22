@@ -1,7 +1,8 @@
-ARG BASE
-FROM ${BASE}
+ARG BASE_IMAGE
 
-ARG PHPUNIT
+FROM ${BASE_IMAGE}
+
+ARG PHPUNIT_PHAR=phpunit.phar
 
 RUN apk add --no-cache --virtual build.deps autoconf gcc g++ make &&\
     cd /tmp && pecl download xdebug &&\
@@ -21,7 +22,7 @@ RUN apk add --no-cache libpng libzip zlib &&\
 RUN apk add --no-cache openssh rsync git mysql-client
 
 ADD https://getcomposer.org/composer.phar /usr/local/bin/composer
-ADD https://phar.phpunit.de/${PHPUNIT} /usr/local/bin/phpunit
+ADD https://phar.phpunit.de/${PHPUNIT_PHAR} /usr/local/bin/phpunit
 ADD http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar /usr/local/bin/php-cs-fixer
 ADD https://github.com/phan/phan/releases/download/1.0.1/phan.phar /usr/local/bin/phan
 
