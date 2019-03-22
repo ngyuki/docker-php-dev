@@ -13,8 +13,8 @@ RUN apk add --no-cache --virtual build.deps autoconf gcc g++ make &&\
     cd /tmp && rm -fr /tmp/* &&\
     apk del build.deps
 
-RUN apk add --no-cache libpng zlib &&\
-    apk add --no-cache --virtual build.deps libpng-dev zlib-dev &&\
+RUN apk add --no-cache libpng libzip zlib &&\
+    apk add --no-cache --virtual build.deps libpng-dev libzip-dev zlib-dev &&\
     docker-php-ext-install gd pdo_mysql pcntl zip &&\
     apk del build.deps
 
