@@ -8,7 +8,8 @@ all: latest
 build: ${tags}
 
 latest: $(lastword ${versions})
-	IMAGE_NAME=${DOCKER_REPO}:$< DOCKER_TAG=$^ LATEST_VERSION=$@ \
+	LATEST_VERSION=$^ LATEST_NO_PUSH=1 \
+	IMAGE_NAME=${DOCKER_REPO}:$< DOCKER_TAG=$^ \
 	DOCKER_REPO=${DOCKER_REPO} DOCKERFILE_PATH=${DOCKERFILE_PATH} \
 	./hooks/post_push
 

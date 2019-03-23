@@ -4,5 +4,7 @@ set -eux
 
 if [[ $DOCKER_TAG == $LATEST_VERSION ]]; then
   docker tag $IMAGE_NAME $DOCKER_REPO:latest
-  docker push $DOCKER_REPO:latest
+  if [[ ! -v LATEST_NO_PUSH ]]; then
+    docker push $DOCKER_REPO:latest
+  fi
 fi
