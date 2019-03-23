@@ -16,7 +16,7 @@ RUN apk add --no-cache --virtual build.deps autoconf gcc g++ make &&\
 
 RUN apk add --no-cache libpng libzip zlib &&\
     apk add --no-cache --virtual build.deps libpng-dev libzip-dev zlib-dev &&\
-    docker-php-ext-install gd pdo_mysql pcntl zip &&\
+    docker-php-ext-install gd pcntl pdo_mysql sockets zip &&\
     apk del build.deps
 
 RUN apk add --no-cache openssh rsync git mysql-client

@@ -8,10 +8,14 @@ PHP のアプリ開発用の Docker イメージ。
 
 - PHP Extension
     - xdebug
-    - pdo_mysql
-    - gd
-    - zip
     - opcache
+    - gd
+    - pcntl
+    - pdo_mysql
+    - sockets
+    - zip
+    - ast
+    - apcu
 - Command
     - ssh
     - rsync
