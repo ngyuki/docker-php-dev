@@ -5,13 +5,10 @@ FROM ${BASE_IMAGE}
 ARG PHPUNIT_PHAR=phpunit.phar
 
 RUN apk add --no-cache --virtual build.deps autoconf gcc g++ make &&\
-    cd /tmp && pecl download xdebug &&\
-      tar xzf xdebug-*.tgz && cd xdebug-* && phpize && ./configure && make install &&\
-    cd /tmp && curl -fsSL https://github.com/nikic/php-ast/archive/v0.1.6.tar.gz -o php-ast-0.1.6.tgz &&\
-      tar xzf php-ast-*.tgz && cd php-ast-* && phpize && ./configure && make install &&\
-    cd /tmp && pecl download apcu &&\
-      tar xzf apcu-*.tgz && cd apcu-* && phpize && ./configure && make install &&\
-    cd /tmp && rm -fr /tmp/* &&\
+    pecl install xdebug &&\
+    pecl install ast &&\
+    pecl install apcu &&\
+    rm -fr /tmp/* &&\
     apk del build.deps
 
 RUN apk add --no-cache libpng libzip zlib &&\
@@ -24,7 +21,7 @@ RUN apk add --no-cache openssh rsync git mysql-client
 ADD https://getcomposer.org/composer.phar /usr/local/bin/composer
 ADD https://phar.phpunit.de/${PHPUNIT_PHAR} /usr/local/bin/phpunit
 ADD http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar /usr/local/bin/php-cs-fixer
-ADD https://github.com/phan/phan/releases/download/1.0.1/phan.phar /usr/local/bin/phan
+ADD https://github.com/phan/phan/releases/download/1.2.7/phan.phar /usr/local/bin/phan
 
 RUN curl -LSs https://box-project.github.io/box2/installer.php | php &&\
   mv box.phar /usr/local/bin/box &&\
