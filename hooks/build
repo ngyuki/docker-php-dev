@@ -6,6 +6,7 @@ BUILD_OPTS=
 
 case $DOCKER_TAG in
   7.0) BUILD_OPTS='--build-arg PHPUNIT_PHAR=phpunit-6.phar' ;;
+  7.1) BUILD_OPTS='--build-arg PHPUNIT_PHAR=phpunit-7.phar' ;;
 esac
 
 docker build . --pull --build-arg BASE_IMAGE=php:$DOCKER_TAG-alpine $BUILD_OPTS -f $DOCKERFILE_PATH -t $IMAGE_NAME
