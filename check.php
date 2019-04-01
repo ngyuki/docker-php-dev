@@ -1,55 +1,70 @@
 <?php
 namespace App;
 
-$exit = 0;
+$success = 0;
+$failed = 0;
 
-function check($title, $status)
+function check($title, $status, $message = null)
 {
-    global $exit;
+    global $success, $failed;
     if ($status) {
-        printf("ok: %s\n", $title);
+        $success++;
+        if ($message === null) {
+            $message = "ok";
+        }
     } else {
-        printf("failed: %s\n", $title);
-        $exit = 1;
+        $failed++;
+        if ($message === null) {
+            $message = "failed";
+        }
     }
+    printf("%-16s%s\n", $title, $message);
 }
 
-function check_extension_loaded($ext)
+function check_command($command)
 {
-    check("extension $ext", extension_loaded($ext));
+    global $success, $failed;
+    ob_start();
+    try {
+        system("$command 2>&1", $rc);
+    } finally {
+        $output = ob_get_clean();
+    }
+    $status = $rc === 0;
+    $title = strtok($command, " ");
+    $message = strtok($output, "\n");
+    check($title, $status, $message);
 }
 
-function check_executable($filename)
+function check_extension($ext)
 {
-    check("$filename", is_executable($filename));
+    check("$ext", extension_loaded($ext));
 }
 
-function check_execution($command)
-{
-    system(">dev/null 2>&1 $command", $rc);
-    check($command, $rc === 0);
-}
+echo "=== Check executable\n";
+check_command('php --version');
+check_command('ssh -V');
+check_command('rsync --version');
+check_command('git --version');
+check_command('mysql --version');
+check_command('phpunit --version');
+check_command('composer --version');
+check_command('php-cs-fixer --version');
+check_command('phan --version');
+check_command('box --no-ansi --version');
 
+echo "\n=== Check php extension\n";
 check("opcache", !!opcache_get_status());
+check_extension('xdebug');
+check_extension('ast');
+check_extension('apcu');
+check_extension('gd');
+check_extension('pcntl');
+check_extension('pdo_mysql');
+check_extension('sockets');
+check_extension('zip');
 
-check_extension_loaded('xdebug');
-check_extension_loaded('ast');
-check_extension_loaded('apcu');
-check_extension_loaded('gd');
-check_extension_loaded('pcntl');
-check_extension_loaded('pdo_mysql');
-check_extension_loaded('sockets');
-check_extension_loaded('zip');
+echo "\n=== Result\n";
+printf("total %d / success %d / failed %d\n", $success + $failed, $success, $failed);
 
-check_executable('/usr/bin/ssh');
-check_executable('/usr/bin/rsync');
-check_executable('/usr/bin/git');
-check_executable('/usr/bin/mysql');
-
-check_execution('/usr/local/bin/phpunit --version');
-check_execution('/usr/local/bin/composer --version');
-check_execution('/usr/local/bin/php-cs-fixer --version');
-check_execution('/usr/local/bin/phan --version');
-check_execution('/usr/local/bin/box --version');
-
-exit($exit);
+exit((int)($failed > 0));
