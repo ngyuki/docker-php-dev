@@ -7,15 +7,15 @@ PHP のアプリ開発用の Docker イメージ。
 公式の php:alpine のイメージに次を追加しています。
 
 - PHP Extension
-    - xdebug
     - opcache
+    - xdebug
+    - ast
+    - apcu
     - gd
     - pcntl
     - pdo_mysql
     - sockets
     - zip
-    - ast
-    - apcu
 - Command
     - ssh
     - rsync
@@ -23,23 +23,17 @@ PHP のアプリ開発用の Docker イメージ。
     - mysql
     - composer
     - phpunit
+    - php-cs-fixer
     - phan
+    - box
 
-PHP 拡張の xdebug はデフォで無効なので `docker-php-ext-enable xdebug` で有効化する必要があります。
+PHP 拡張の xdebug はデフォで無効なので `docker-php-ext-enable xdebug` や `php -d zend_extension=xdebug.so` で有効化する必要があります。
 その他の PHP 拡張はすべてデフォで有効です。
 
-## Build and Push
-
-```sh
-make
-make test
-make push
-```
-
-## Example
+## Usage
 
 ```sh
 docker run --rm ngyuki/php-dev php -v
 docker run --rm ngyuki/php-dev phpunit --version
-docker run --rm -v "$PWD":/app ngyuki/php-dev php -d zend_extension=xdebug.so -d opcache.enable_cli=1 /app/check.php
+docker run --rm ngyuki/php-dev php -d zend_extension=xdebug.so -d opcache.enable_cli=1 /usr/local/bin/docker-php-check.php
 ```

@@ -9,6 +9,9 @@ case $DOCKER_TAG in
   7.1) BUILD_OPTS='--build-arg PHPUNIT_PHAR=phpunit-7.phar' ;;
 esac
 
+PHAN_VERSION=$(curl -fsSLI https://github.com/phan/phan/releases/latest | grep Location | tr -d '\r' | awk -F/ '{print $NF}' )
+BUILD_OPTS="$BUILD_OPTS --build-arg PHAN_VERSION=$PHAN_VERSION"
+
 docker build . --pull --build-arg BASE_IMAGE=php:$DOCKER_TAG-alpine $BUILD_OPTS -f $DOCKERFILE_PATH -t $IMAGE_NAME
 
-docker run --rm -v "$PWD:/app" $IMAGE_NAME -d zend_extension=xdebug.so -d opcache.enable_cli=1 /app/check.php
+docker run --rm $IMAGE_NAME -d zend_extension=xdebug.so -d opcache.enable_cli=1 /usr/local/bin/docker-php-check.php

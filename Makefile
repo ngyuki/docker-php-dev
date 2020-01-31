@@ -1,19 +1,15 @@
 DOCKER_REPO = ngyuki/php-dev
 DOCKERFILE_PATH = Dockerfile
-versions = 7.0 7.1 7.2 7.3
-tags = ${versions} latest
+versions = 7.1 7.2 7.3 7.4
 
-all: latest
+all: ${versions} latest
 
-build: ${tags}
+build: ${versions}
 
 latest: $(lastword ${versions})
-	LATEST_VERSION=$^ LATEST_NO_PUSH=1 \
-	IMAGE_NAME=${DOCKER_REPO}:$< DOCKER_TAG=$^ \
-	DOCKER_REPO=${DOCKER_REPO} DOCKERFILE_PATH=${DOCKERFILE_PATH} \
-	./hooks/post_push
+	IMAGE_NAME=${DOCKER_REPO}:$< DOCKER_TAG=$^ DOCKER_REPO=${DOCKER_REPO} DOCKERFILE_PATH=${DOCKERFILE_PATH} \
+	  LATEST_VERSION=$(lastword ${versions}) LATEST_NO_PUSH=1 ./hooks/post_push
 
 ${versions}:
-	IMAGE_NAME=${DOCKER_REPO}:$@ DOCKER_TAG=$@ \
-	DOCKER_REPO=${DOCKER_REPO} DOCKERFILE_PATH=${DOCKERFILE_PATH} \
-	./hooks/build
+	IMAGE_NAME=${DOCKER_REPO}:$@ DOCKER_TAG=$@ DOCKER_REPO=${DOCKER_REPO} DOCKERFILE_PATH=${DOCKERFILE_PATH} \
+	  ./hooks/build
