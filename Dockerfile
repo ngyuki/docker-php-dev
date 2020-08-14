@@ -16,25 +16,21 @@ RUN apk add --no-cache openssh rsync git mysql-client
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-ARG PHPUNIT_PHAR=phpunit.phar
-ADD https://phar.phpunit.de/${PHPUNIT_PHAR} /usr/local/bin/phpunit
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-ADD http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar /usr/local/bin/php-cs-fixer
-
-ARG PHAN_VERSION
-ADD https://github.com/phan/phan/releases/download/${PHAN_VERSION}/phan.phar /usr/local/bin/phan
-
-RUN curl -fsSL "https://box-project.github.io/box2/installer.php" | php &&\
-  mv box.phar /usr/local/bin/box &&\
-  chmod +x /usr/local/bin/box
-
-RUN chmod +x \
-      /usr/local/bin/phpunit \
-      /usr/local/bin/php-cs-fixer \
-      /usr/local/bin/phan
+RUN set -eux ;\
+    composer global config repositories.pharhub composer https://packages.pharhub.dev/ ;\
+    for x in \
+        phpunit      \
+        php-cs-fixer \
+        phan         \
+        box          \
+    ; do \
+        composer global require pharhub/$x &&\
+        cp -aL ~/.composer/vendor/bin/$x.phar /usr/bin/$x &&\
+    :; done ;\
+    rm -fr ~/.composer
 
 RUN docker-php-ext-enable opcache ast apcu
-
-ENV COMPOSER_ALLOW_SUPERUSER=1
 
 ADD check.php /usr/local/bin/docker-php-check.php
