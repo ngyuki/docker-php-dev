@@ -1,0 +1,26 @@
+{
+    "extends": [
+        "config:base"
+    ],
+    "timezone": "Asia/Tokyo",
+    "labels": ["renovate"],
+    "enabledManagers": ["dockerfile"],
+    "separateMinorPatch": true,
+    "rebaseWhen": "behind-base-branch",
+    "prHourlyLimit": 10,
+    "prConcurrentLimit": 10,
+    "packageRules": [
+        {
+            "datasources": ["docker"],
+            "updateTypes": ["major", "minor"],
+            "enabled": false
+        },
+        {
+            "datasources": ["docker"],
+            "updateTypes": ["patch"],
+            "groupName": "php",
+            "enabled": true,
+            "automerge": true
+        }
+    ]
+}

@@ -1,5 +1,3 @@
-ARG BASE_IMAGE
-FROM ${BASE_IMAGE}
 
 RUN apk add --no-cache --virtual .build-deps autoconf gcc g++ make &&\
     pecl install xdebug &&\
@@ -32,5 +30,3 @@ RUN set -eux ;\
     rm -fr ~/.composer
 
 RUN docker-php-ext-enable opcache ast apcu
-
-ADD check.php /usr/local/bin/docker-php-check.php
