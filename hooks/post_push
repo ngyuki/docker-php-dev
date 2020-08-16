@@ -1,10 +1,11 @@
 #!/bin/bash
 
-set -eux
+echo Running post push
 
-if [[ $DOCKER_TAG == $LATEST_VERSION ]]; then
-  docker tag $IMAGE_NAME $DOCKER_REPO:latest
-  if [[ ! -v LATEST_NO_PUSH ]]; then
-    docker push $DOCKER_REPO:latest
-  fi
+set -eux
+cd -- "$(git rev-parse --show-toplevel)"
+
+if [ "$DOCKER_TAG" == "$(cat latest)" ]; then
+  docker tag "$IMAGE_NAME" "$DOCKER_REPO:latest"
+  docker push "$DOCKER_REPO:latest"
 fi
