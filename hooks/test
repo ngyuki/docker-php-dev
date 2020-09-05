@@ -3,6 +3,5 @@
 echo Running custom test
 
 set -eux
-cd -- "$(git rev-parse --show-toplevel)"
 
-docker run --rm -i "$IMAGE_NAME" -d zend_extension=xdebug.so -d opcache.enable_cli=1 < check.php
+docker run --rm -i "$IMAGE_NAME" -d zend_extension=xdebug.so -d opcache.enable_cli=1 < ../check.php
