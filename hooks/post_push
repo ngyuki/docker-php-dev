@@ -3,9 +3,8 @@
 echo Running post push
 
 set -eux
-cd -- "$(git rev-parse --show-toplevel)"
 
-if [ "$DOCKER_TAG" == "$(cat latest)" ]; then
+if [ "$(readlink -f .)" == "$(readlink -f ../latest)" ]; then
   docker tag "$IMAGE_NAME" "$DOCKER_REPO:latest"
   docker push "$DOCKER_REPO:latest"
 fi
