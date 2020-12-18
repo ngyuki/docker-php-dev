@@ -3,11 +3,17 @@ namespace App;
 
 $success = 0;
 $failed = 0;
+$skipped = 0;
 
 function check($title, $status, $message = null)
 {
-    global $success, $failed;
-    if ($status) {
+    global $success, $failed, $skipped;
+    if ($status === null) {
+        $skipped++;
+        if ($message === null) {
+            $message = '... SKIP ...';
+        }
+    } elseif ($status) {
         $success++;
         if ($message === null) {
             $message = "ok";
@@ -21,24 +27,29 @@ function check($title, $status, $message = null)
     printf("%-16s%s\n", $title, $message);
 }
 
-function check_command($command)
+function check_command($command, $when = true)
 {
-    global $success, $failed;
-    ob_start();
-    try {
-        system("$command 2>&1", $rc);
-    } finally {
-        $output = ob_get_clean();
+    $title = strtok($command, ' ');
+    if (!$when) {
+        $status = null;
+        $message = null;
+    } else {
+        ob_start();
+        try {
+            system("$command 2>&1", $rc);
+        } finally {
+            $output = ob_get_clean();
+        }
+        $status = $rc === 0;
+        $message = strtok($output, "\n");
     }
-    $status = $rc === 0;
-    $title = strtok($command, " ");
-    $message = strtok($output, "\n");
     check($title, $status, $message);
 }
 
-function check_extension($ext)
+function check_extension($ext, $alias = null)
 {
-    check("$ext", extension_loaded($ext));
+    $alias = $alias !== null ? $alias : $ext;
+    check("$alias", extension_loaded($ext), phpversion($ext));
 }
 
 echo "=== Check executable\n";
@@ -51,10 +62,10 @@ check_command('composer --version');
 check_command('phpunit --version');
 check_command('php-cs-fixer --version');
 check_command('phan --version');
-check_command('box --no-ansi --version');
+check_command('box --no-ansi --version', version_compare(PHP_VERSION, '7.1.0', '>='));
 
 echo "\n=== Check php extension\n";
-check("opcache", !!opcache_get_status());
+check_extension('zend opcache', 'opcache');
 check_extension('xdebug');
 check_extension('ast');
 check_extension('apcu');
@@ -65,6 +76,6 @@ check_extension('sockets');
 check_extension('zip');
 
 echo "\n=== Result\n";
-printf("total %d / success %d / failed %d\n", $success + $failed, $success, $failed);
+printf("total %d / success %d / failed %d / skipped %d\n", $success + $failed + $skipped, $success, $failed, $skipped);
 
 exit((int)($failed > 0));
