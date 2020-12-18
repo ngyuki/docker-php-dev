@@ -61,7 +61,7 @@ check_command('mysql --version');
 check_command('unzip -v');
 check_command('composer --version');
 check_command('phpunit --version');
-check_command('php-cs-fixer --version');
+check_command('php-cs-fixer --version', version_compare(PHP_VERSION, '8.0.0') < 0);
 check_command('phan --version');
 
 echo "\n=== Check php extension\n";
