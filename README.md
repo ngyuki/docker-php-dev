@@ -23,9 +23,8 @@ PHP のアプリ開発用の Docker イメージ。
     - mysql
     - composer
     - phpunit
-    - php-cs-fixer
     - phan
-    - box
+    - php-cs-fixer
 
 PHP 拡張の xdebug はデフォで無効なので `docker-php-ext-enable xdebug` や `php -d zend_extension=xdebug.so` で有効化する必要があります。
 その他の PHP 拡張はすべてデフォで有効です。

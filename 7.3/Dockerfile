@@ -11,23 +11,30 @@ ENV PHPIZE_DEPS $PHPIZE_DEPS libpng-dev libzip-dev zlib-dev
 RUN apk add --no-cache libpng libzip zlib &&\
     docker-php-ext-install gd pcntl pdo_mysql sockets zip
 
-RUN apk add --no-cache openssh rsync git mysql-client
+RUN apk add --no-cache openssh rsync git mysql-client jq
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN set -eux ;\
-    composer global config repositories.pharhub composer https://packages.pharhub.dev/ ;\
     for x in \
-        phpunit      \
-        php-cs-fixer \
-        phan         \
-        box          \
+        "phpunit/phpunit           https://phar.phpunit.de/phpunit-%s.phar" \
+        "phan/phan                 https://github.com/phan/phan/releases/download/%s/phan.phar" \
+        "friendsofphp/php-cs-fixer https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/%s/php-cs-fixer.phar" \
     ; do \
-        composer global require pharhub/$x &&\
-        cp -aL ~/.composer/vendor/bin/$x.phar /usr/bin/$x &&\
-    :; done ;\
-    rm -fr ~/.composer
+        cd /tmp &&\
+        set -- $x &&\
+        composer require --no-install "$1" &&\
+        version=$(jq '.packages[] | select(.name == $name) | .version' -r --arg name "$1" < composer.lock) &&\
+        #version=$(composer global show --locked | grep -E "^$1\s" | awk '{print $2}') &&\
+        url=$(printf "$2" "$version") &&\
+        file=${1#*/} &&\
+        curl -fsSL "$url" > "/usr/bin/$file" &&\
+        chmod +x "/usr/bin/$file" &&\
+        rm -fr ~/.composer &&\
+        rm -f composer.* &&\
+        ls -l &&\
+    :; done
 
 RUN docker-php-ext-enable opcache ast apcu
