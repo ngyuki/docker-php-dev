@@ -21,6 +21,7 @@ PHP のアプリ開発用の Docker イメージ。
     - rsync
     - git
     - mysql
+    - unzip
     - composer
     - phpunit
     - phan

@@ -58,6 +58,7 @@ check_command('ssh -V');
 check_command('rsync --version');
 check_command('git --version');
 check_command('mysql --version');
+check_command('unzip -v');
 check_command('composer --version');
 check_command('phpunit --version');
 check_command('php-cs-fixer --version');
