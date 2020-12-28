@@ -62,7 +62,6 @@ check_command('composer --version');
 check_command('phpunit --version');
 check_command('php-cs-fixer --version');
 check_command('phan --version');
-check_command('box --no-ansi --version', version_compare(PHP_VERSION, '7.1.0', '>='));
 
 echo "\n=== Check php extension\n";
 check_extension('zend opcache', 'opcache');
