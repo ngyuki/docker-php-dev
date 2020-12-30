@@ -49,7 +49,9 @@ function check_command($command, $when = true)
 function check_extension($ext, $alias = null)
 {
     $alias = $alias !== null ? $alias : $ext;
-    check("$alias", extension_loaded($ext), phpversion($ext));
+    $status = extension_loaded($ext);
+    $message = $status ? phpversion($ext) : 'FAILED';
+    check($alias, $status, $message);
 }
 
 echo "=== Check executable\n";
