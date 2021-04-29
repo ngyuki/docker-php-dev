@@ -17,6 +17,7 @@ PHP のアプリ開発用の Docker イメージ。
     - xdebug
     - zip
 - Command
+    - bash
     - git
     - jq
     - mysql
