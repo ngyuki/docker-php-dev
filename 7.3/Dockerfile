@@ -11,7 +11,7 @@ ENV PHPIZE_DEPS $PHPIZE_DEPS libpng-dev libzip-dev zlib-dev
 RUN apk add --no-cache libpng libzip zlib &&\
     docker-php-ext-install gd pcntl pdo_mysql sockets zip
 
-RUN apk add --no-cache openssh rsync git mysql-client unzip jq
+RUN apk add --no-cache bash openssh rsync git mysql-client unzip jq
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 

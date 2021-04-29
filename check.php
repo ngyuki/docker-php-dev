@@ -56,6 +56,7 @@ function check_extension($ext, $alias = null)
 
 echo "=== Check executable\n";
 check_command('php --version');
+check_command('bash --version');
 check_command('ssh -V');
 check_command('rsync --version');
 check_command('git --version');
