@@ -1,12 +1,15 @@
 versions = $(wildcard [0-9]*.[0-9]*)
-all: $(versions:%=%/Dockerfile)
+
+all: $(versions:%=%/hooks) $(versions:%=%/Dockerfile)
 
 $(versions:%=%/Dockerfile): version=${@D}
 $(versions:%=%/Dockerfile): patches=$(wildcard $(version)/*.patch)
 $(versions:%=%/Dockerfile): Dockerfile.in $(patches)
-	mkdir -pv $(version)
 	sed -e '2,$$d' -e 'r Dockerfile.in' -i $@
 	for p in $(patches); do patch -p1 < $$p; done
+
+$(versions:%=%/hooks): hooks
+	ln -sfn ../hooks/ $@
 
 build: ${versions}
 

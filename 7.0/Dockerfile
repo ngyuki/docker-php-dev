@@ -36,3 +36,5 @@ RUN set -eux ;\
     :; done
 
 RUN docker-php-ext-enable opcache ast apcu
+
+COPY files/ /

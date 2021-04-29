@@ -4,4 +4,7 @@ echo Running custom build
 
 set -eux
 
-docker build - --pull -t "$IMAGE_NAME" < "$DOCKERFILE_PATH"
+rm -fr files/
+cp -a ../files/ .
+
+docker build . --pull -t "$IMAGE_NAME" -f "$DOCKERFILE_PATH"
