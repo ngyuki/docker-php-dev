@@ -1,4 +1,4 @@
-FROM php:7.4.16-alpine
+FROM php:7.4.18-alpine
 
 RUN apk add --no-cache --virtual .build-deps autoconf gcc g++ make &&\
     pecl install xdebug &&\
