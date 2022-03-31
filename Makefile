@@ -1,5 +1,5 @@
 DOCKER_REPO := ngyuki/php-dev
-LATEST_VERSION := 8.0
+LATEST_VERSION := 8.1
 
 versions := $(wildcard [0-9]*.[0-9]*)
 tags := ${versions} latest
