@@ -1,6 +1,6 @@
 name: CI
 env:
-  DOCKER_REPO: ngyuki/php-dev
+  DOCKERHUB_USERNAME: ngyuki
   LATEST_VERSION: 8.1
 on:
   push:
@@ -27,17 +27,22 @@ jobs:
 
       - uses: docker/setup-buildx-action@v1
 
-      - run: |
-          version="${{ matrix.php-version }}"
-          if [ "$version" == "$LATEST_VERSION" ]; then
-            echo "DOCKER_TAGS=$version,latest" >> $GITHUB_ENV
-          else
-            echo "DOCKER_TAGS=$version" >> $GITHUB_ENV
-          fi
+      - run: make -B ${{ matrix.php-version }}/Dockerfile
 
-      - uses: docker/build-push-action@v2
+      - run: make ${{ matrix.php-version }}
+
+      - run: make ${{ matrix.php-version }}/test
+
+      - if: ${{ github.ref == 'refs/heads/master' }}
+        uses: docker/login-action@v1
         with:
-          context: .
-          file: ${{ matrix.php-version }}/Dockerfile
-          push: false
-          tags: ${{ env.DOCKER_TAGS }}
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - if: ${{ github.ref == 'refs/heads/master' }}
+        run: |
+          make ${{ matrix.php-version }}/push
+          if [ "${{ matrix.php-version }}" == "$(make echo-latest)" ]; then
+            make latest
+            make latest/push
+          fi
