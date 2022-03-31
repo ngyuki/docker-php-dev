@@ -21,10 +21,6 @@ ${versions}: DOCKER_TAG=$@
 ${versions}: %: %/Dockerfile
 	docker build . --pull -t ${DOCKER_REPO}:${DOCKER_TAG} -f ${DOCKER_TAG}/Dockerfile
 
-.PHONY: latest
-latest: ${LATEST_VERSION}
-	docker tag ${DOCKER_REPO}:$< ${DOCKER_REPO}:$@
-
 .PHONY: test
 test: $(tags:%=%/test)
 
@@ -32,6 +28,13 @@ test: $(tags:%=%/test)
 $(tags:%=%/test): DOCKER_TAG=${@D}
 $(tags:%=%/test):
 	docker run --rm -i ${DOCKER_REPO}:${DOCKER_TAG} -d zend_extension=xdebug.so -d opcache.enable_cli=1 < ./check.php
+
+.PHONY: latest
+latest: ${LATEST_VERSION}
+	docker tag ${DOCKER_REPO}:$< ${DOCKER_REPO}:$@
+
+echo-latest:
+	@echo ${LATEST_VERSION}
 
 .PHONY: push
 push: $(tags:%=%/push)
