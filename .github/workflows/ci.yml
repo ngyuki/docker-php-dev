@@ -1,14 +1,15 @@
 name: CI
 env:
+  DOCKER_REPO: ngyuki/php-dev
   DOCKERHUB_USERNAME: ngyuki
   LATEST_VERSION: 8.1
 on:
   push:
     branches:
-      - '*'
+      - master
   pull_request:
     branches:
-      - '*'
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,26 +24,54 @@ jobs:
           - "8.0"
           - "8.1"
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - uses: docker/setup-buildx-action@v1
+      - name: Dockerfile
+        run: make -B ${{ matrix.php-version }}/Dockerfile
 
-      - run: make -B ${{ matrix.php-version }}/Dockerfile
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      - run: make ${{ matrix.php-version }}
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.php-version }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ matrix.php-version }}
+            ${{ runner.os }}-buildx
 
-      - run: make ${{ matrix.php-version }}/test
+      - name: Build
+        run: docker buildx build .
+          -t ${DOCKER_REPO}:${{ matrix.php-version }}
+          -f ${{ matrix.php-version }}/Dockerfile
+          --cache-from type=local,src=/tmp/.buildx-cache
+          --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-      - if: ${{ github.ref == 'refs/heads/master' }}
+      - name: Move cache
+        # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Test
+        run: make ${{ matrix.php-version }}/test
+
+      - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+        if: ${{ github.ref == 'refs/heads/master' }}
 
-      - if: ${{ github.ref == 'refs/heads/master' }}
+      - name: Push
         run: |
-          make ${{ matrix.php-version }}/push
-          if [ "${{ matrix.php-version }}" == "$(make echo-latest)" ]; then
-            make latest
-            make latest/push
+          docker push ${DOCKER_REPO}:${{ matrix.php-version }}
+          if [ "${{ matrix.php-version }}" == "${LATEST_VERSION}" ]; then
+            docker tag ${DOCKER_REPO}:${{ matrix.php-version }} ${DOCKER_REPO}:latest
+            docker push ${DOCKER_REPO}:latest
           fi
+        if: ${{ github.ref == 'refs/heads/master' }}
