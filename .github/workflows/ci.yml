@@ -47,6 +47,7 @@ jobs:
           -f ${{ matrix.php-version }}/Dockerfile
           --cache-from type=local,src=/tmp/.buildx-cache
           --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max
+          --load
 
       - name: Move cache
         # Temp fix
