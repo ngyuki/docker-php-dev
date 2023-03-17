@@ -1,0 +1,13 @@
+diff --git a/7.2/Dockerfile b/7.2/Dockerfile
+index 91a2d6f..7ab075c 100644
+--- a/7.2/Dockerfile
++++ b/7.2/Dockerfile
+@@ -1,7 +1,7 @@
+ FROM php:7.2.34-alpine
+ 
+ RUN apk add --no-cache --virtual .build-deps autoconf gcc g++ make linux-headers &&\
+-    pecl install xdebug &&\
++    pecl install xdebug-3.1.6 &&\
+     pecl install ast &&\
+     pecl install apcu &&\
+     apk del .build-deps &&\

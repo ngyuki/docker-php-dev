@@ -1,7 +1,7 @@
 FROM php:7.4.33-alpine
 
 RUN apk add --no-cache --virtual .build-deps autoconf gcc g++ make linux-headers &&\
-    pecl install xdebug &&\
+    pecl install xdebug-3.1.6 &&\
     pecl install ast &&\
     pecl install apcu &&\
     apk del .build-deps &&\
